@@ -1,26 +1,46 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect } from "react";
+import { connect, ConnectedProps } from "react-redux";
+import { bindActionCreators, Dispatch } from "redux";
 
-function App() {
+import * as treeActions from "store/actions";
+
+import { RootState } from "store";
+
+import styles from "./App.module.css";
+
+const mapStateToProps = (state: RootState) => {
+  return {
+    tree: state.tree,
+  };
+};
+
+const mapDispatchToProps = (dispatch: Dispatch) => {
+  return bindActionCreators(
+    {
+      getNode: treeActions.getNode,
+    },
+    dispatch
+  );
+};
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+type Props = PropsFromRedux;
+
+const App: React.FC<Props> = ({ tree, getNode }) => {
+  useEffect(() => {
+    getNode({ nodeId: 4 });
+  }, [getNode]);
+
+  console.log(tree, "tree");
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className={styles.app}>
+      <div className={styles["nodes-transfer"]}></div>
     </div>
   );
-}
+};
 
-export default App;
+export default connector(App);
