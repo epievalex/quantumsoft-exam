@@ -5,23 +5,21 @@ export type Node = {
   };
   children: number[];
   parent: number | null;
-  nestingOfParents?: number[];
-} | null;
+  isDeleted?: true;
+};
 
-export type HashedNodes = {
+export type Tree = {
   [key: string]: Node;
 } | null;
 
-export type HashedTree = HashedNodes;
-
 export interface TreeState {
-  tree: HashedTree;
-  hashedNodes: HashedNodes;
+  initialTree: Tree;
+  hashedNodes: Tree;
 }
 
 export interface IGetNodeAction {
   type: string;
-  payload: HashedNodes;
+  payload: Tree;
 }
 
-export type ITreeAction = IGetNodeAction;
+export type INodeTransferAction = IGetNodeAction;

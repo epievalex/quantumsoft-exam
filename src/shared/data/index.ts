@@ -1,12 +1,12 @@
-import { HashedTree } from "store/types";
+import { Tree } from "store/nodeTransfer/types";
 
-export const mockedTree: HashedTree = {
+export const mockedTree: Tree = {
   "0": {
     data: {
       id: 0,
       value: "Root",
     },
-    children: [1, 2],
+    children: [1],
     parent: null,
   },
   "1": {

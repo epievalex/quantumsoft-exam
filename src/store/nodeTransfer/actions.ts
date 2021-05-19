@@ -1,15 +1,18 @@
 import { Dispatch } from "redux";
 import * as constants from "./constants";
 
-import { mockedTree } from "data";
+import { mockedTree } from "shared/data";
 
 import { IGetNode } from "api/interfaces";
-import { Node, IGetNodeAction } from "./types";
+import { IGetNodeAction } from "./types";
+import { RootState } from "store";
 
 export const getNode = (data: IGetNode) => async (
-  dispatch: Dispatch<IGetNodeAction>
-): Promise<Node> => {
-  const res = mockedTree?.[data.nodeId] || null;
+  dispatch: Dispatch<IGetNodeAction>,
+  getState: () => RootState
+): Promise<null> => {
+  const res = mockedTree?.[data.nodeId];
+  console.log(getState(), "state");
 
   if (res) {
     dispatch({
@@ -20,5 +23,5 @@ export const getNode = (data: IGetNode) => async (
     dispatch({ type: constants.LOAD_TREE_NODE_FAILED, payload: null });
   }
 
-  return res;
+  return null;
 };

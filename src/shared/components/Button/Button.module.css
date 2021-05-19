@@ -1,0 +1,18 @@
+.button {
+  height: 36px;
+  border-radius: var(--button-border-radius);
+  padding: 0 18px;
+  background: var(--primary-button-color);
+  border: 3px solid var(--primary-border-color);
+  color: #000;
+  outline: none;
+  cursor: pointer;
+}
+
+.button:active {
+  transform: translateY(1px);
+}
+
+.button.disabled {
+  filter: grayscale(70%);
+}

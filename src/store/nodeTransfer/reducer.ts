@@ -1,19 +1,18 @@
-import { mockedTree } from "data";
-import * as constants from "store/constants";
+import { mockedTree } from "shared/data";
+import * as constants from "./constants";
 
-import { ITreeAction, TreeState } from "./types";
+import { INodeTransferAction, TreeState } from "./types";
 
 export const initialState: TreeState = {
-  tree: mockedTree,
+  initialTree: mockedTree,
   hashedNodes: null,
 };
 
 export const reducer = (
   state = initialState,
-  action: ITreeAction
+  action: INodeTransferAction
 ): TreeState => {
   const { type, payload } = action;
-  console.log(payload);
 
   switch (type) {
     case constants.LOAD_TREE_NODE_SUCCESS:

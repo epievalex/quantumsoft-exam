@@ -1,8 +1,12 @@
-import { createStore, applyMiddleware } from "redux";
+import { createStore, applyMiddleware, combineReducers } from "redux";
 import { composeWithDevTools } from "redux-devtools-extension";
 import thunk from "redux-thunk";
 
-import { reducer as rootReducer } from "./reducer";
+import { reducer as nodeTransferReducer } from "./nodeTransfer/reducer";
+
+const rootReducer = combineReducers({
+  nodeTransfer: nodeTransferReducer,
+});
 
 const store = createStore(
   rootReducer,

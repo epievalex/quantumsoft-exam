@@ -1,0 +1,13 @@
+:root {
+  --primary-background-color: #121212;
+
+  --primary-color: #dee5f5;
+  --secondary-color: #ffffff;
+
+  --primary-border-color: #3f5977;
+
+  --primary-button-color: #8eb4e3;
+
+  --primary-border-radius: 3px;
+  --button-border-radius: 6px;
+}
