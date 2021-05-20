@@ -9,11 +9,9 @@ import { Button } from "shared/components/Button";
 import * as treeActions from "store/nodeTransfer/actions";
 
 import { RootState } from "store";
-import { Tree } from "store/nodeTransfer/types";
+import { Tree, TreeType } from "store/nodeTransfer/types";
 
 import styles from "./NodeTransfer.module.css";
-
-export type TreeType = "initial" | "transfered";
 
 export type Node = {
   data: {
@@ -37,13 +35,18 @@ const mapStateToProps = (state: RootState) => {
   return {
     initialTree: state.nodeTransfer.initialTree,
     hashedNodes: state.nodeTransfer.hashedNodes,
+    nodesToUpdate: state.nodeTransfer.changedNodesHash,
   };
 };
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return bindActionCreators(
     {
+      resetState: treeActions.resetState,
       getNode: treeActions.getNode,
+      createLocalNode: treeActions.createLocalNode,
+      deleteNode: treeActions.deleteNode,
+      updateTree: treeActions.updateTree,
     },
     dispatch
   );
@@ -62,10 +65,13 @@ type Props = ILocalProps & PropsFromRedux;
 const NodeTransfer: React.FC<Props> = ({
   initialTree,
   hashedNodes,
+  resetState,
   getNode,
+  createLocalNode,
+  deleteNode,
+  updateTree,
 }) => {
-  const [selectedNode, setSelectedNode] = useState<Node>();
-
+  const [selectedNode, setSelectedNode] = useState<Node | null>(null);
   const isParentExistInTree: (node: Node, treeToExplore: Tree) => boolean = (
     node,
     treeToExplore
@@ -94,6 +100,9 @@ const NodeTransfer: React.FC<Props> = ({
           }}
         >
           {treeToDraw[nodeId]?.data.value}
+          {treeToDraw[nodeId]?.isDeleted && (
+            <span className={cn(styles.isNodeDeletedIndicator)}>Deleted</span>
+          )}
         </p>
         {drawChildren &&
           treeToDraw[nodeId]?.children.length !== 0 &&
@@ -129,28 +138,73 @@ const NodeTransfer: React.FC<Props> = ({
   };
 
   const onTrasferButtonClick = () => {
-    if (selectedNode !== undefined) {
+    if (selectedNode !== null) {
       getNode({ nodeId: selectedNode.data.id });
     }
   };
 
   const memoizedhashedNodes = useMemo(() => {
-    return drawGraph(hashedNodes, "transfered");
+    return drawGraph(hashedNodes, "hashedNodes");
   }, [hashedNodes, selectedNode]);
 
   return (
     <div className={styles.nodeTransfer}>
       <div className={styles.controlPanel}>
         <div className={styles.treeView}>{memoizedhashedNodes}</div>
-        <div className={styles.controls}></div>
+        <div className={styles.controls}>
+          <Button
+            onClick={() => {
+              selectedNode &&
+                createLocalNode({ parentId: selectedNode.data.id });
+            }}
+            disabled={
+              selectedNode === null ||
+              selectedNode.treeType === "initialTree" ||
+              hashedNodes[selectedNode.data.id].isDeleted
+            }
+          >
+            +
+          </Button>
+          <Button
+            onClick={() => {
+              if (selectedNode) {
+                deleteNode({
+                  nodeIdToDelete: selectedNode.data.id,
+                  treeType: "hashedNodes",
+                });
+              }
+            }}
+            disabled={
+              !selectedNode ||
+              selectedNode.treeType !== "hashedNodes" ||
+              hashedNodes[selectedNode.data.id].isDeleted
+            }
+          >
+            -
+          </Button>
+          <Button
+            onClick={() =>
+              updateTree({
+                treeType: "initialTree",
+              })
+            }
+          >
+            Save
+          </Button>
+          <Button onClick={resetState}>Reset</Button>
+        </div>
       </div>
       <div className={styles.button}>
         <Button
           onClick={onTrasferButtonClick}
-          disabled={selectedNode?.treeType !== "initial"}
+          disabled={
+            selectedNode?.treeType !== "initialTree" || selectedNode.isDeleted
+          }
         >{`<<<`}</Button>
       </div>
-      <div className={styles.treeView}>{drawGraph(initialTree, "initial")}</div>
+      <div className={styles.treeView}>
+        {drawGraph(initialTree, "initialTree")}
+      </div>
     </div>
   );
 };
