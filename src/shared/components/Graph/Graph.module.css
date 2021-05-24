@@ -1,0 +1,9 @@
+.treeView {
+  width: 340px;
+  height: 350px;
+  background: var(--secondary-color);
+  border: 3px solid var(--primary-border-color);
+  border-radius: var(--primary-border-radius);
+  padding: 15px;
+  overflow-y: auto;
+}

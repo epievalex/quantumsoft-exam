@@ -1,8 +1,8 @@
 .nodeTransfer {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
   width: 878px;
-  height: 519px;
+  min-height: 519px;
   background-color: var(--primary-color);
   border-radius: var(--primary-border-radius);
   padding: 56px 14px;
@@ -10,20 +10,8 @@
   user-select: none;
 }
 
-.treeView {
-  width: 340px;
-  height: 350px;
-  background: var(--secondary-color);
-  border: 3px solid var(--primary-border-color);
-  border-radius: var(--primary-border-radius);
-  padding: 15px;
-  overflow-y: auto;
-}
-
-.controlPanel {
-  height: 100%;
+.treeViews {
   display: flex;
-  flex-direction: column;
   justify-content: space-between;
 }
 
@@ -34,31 +22,4 @@
 
 .button {
   margin-top: 65px;
-}
-
-.node,
-.nestedNode {
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.nestedNode {
-  margin-left: 20px;
-}
-
-.nodeValue {
-  width: min-content;
-  padding: 0 3px;
-  border-radius: var(--primary-border-radius);
-}
-
-.nodeValue_active {
-  background: var(--primary-color);
-}
-
-.isNodeDeletedIndicator {
-  font-size: 12px;
-  margin-left: 5px;
-  color: red;
-  text-decoration: underline;
 }

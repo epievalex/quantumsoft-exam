@@ -1,73 +1,51 @@
-import * as constants from "./constants";
+import { NodeParent, Tree, TreeType } from "shared/models/Tree";
 
-export type Node = {
-  data: {
-    id: number;
-    value: string;
-  };
-  children: number[];
-  parent: null | number;
-  isDeleted?: true;
-};
+export type OperationQueueItem =
+  | {
+      operationType: "deleteNode";
+      nodeId: string;
+    }
+  | {
+      operationType: "createNode";
+      parentId: NodeParent;
+      idForNewNode: string;
+    }
+  | {
+      operationType: "changeNodeValue";
+      nodeId: string;
+      value: string;
+    };
 
-export type Tree = {
-  [key: string]: Node;
-};
-
-export type TreeType = "hashedNodes" | "initialTree";
-
-export type ChangedNodesHash = Tree;
-
-export interface TreeState {
-  initialTree: Tree;
-  hashedNodes: Tree;
-  changedNodesHash: ChangedNodesHash;
+export interface TreeState extends Record<TreeType, Tree> {
+  operationQueue: OperationQueueItem[];
 }
 
 export interface IResetStateAction {
-  type: typeof constants.RESET_STATE;
+  type: "@nodeTransfer/RESET_STATE";
 }
 
-export interface IGetNodeAction {
-  type: typeof constants.GET_NODE;
-  payload: Tree;
+export interface IAddOperationToQueueAction {
+  type: "@nodeTransfer/ADD_OPERATION_TO_QUEUE";
+  payload: OperationQueueItem;
 }
 
-export interface ICreateLocalNodeAction {
-  type: typeof constants.CREATE_LOCAL_NODE;
-  payload: Tree;
-}
-
-export interface IDeleteNode {
-  nodeIdToDelete: number;
+export type IUpdateTree = {
+  changedTree: Tree;
   treeType: TreeType;
-}
-
-export interface IDeleteNodeAction {
-  type: typeof constants.DELETE_LOCAL_NODE;
-  payload: { treeType: TreeType; nodeIdToDelete: number };
-}
-
-export interface IUpdateTree {
-  treeType: TreeType;
-}
+  callback?: () => void;
+};
 export interface IUpdateTreeAction {
-  type: typeof constants.UPDATE_TREE;
-  payload: { treeType: TreeType; changedNodesHash: Tree };
+  type: "@nodeTransfer/UPDATE_TREE";
+  payload: { treeType: TreeType; tree: Tree };
 }
 
-export interface ICommitChangedNode {
-  changedNode: Node;
-}
-export interface ICommitChangedNodeAction {
-  type: typeof constants.COMMIT_CHANGED_NODE;
-  payload: Node;
+export interface IApplyChangesToPrimalTreeAction {
+  type: "@nodeTransfer/APPLY_CHANGES_TO_PRIMAL_TREE";
+  payload: Tree;
 }
 
 export type INodeTransferAction =
   | IResetStateAction
-  | IGetNodeAction
-  | ICreateLocalNodeAction
-  | IDeleteNodeAction
   | IUpdateTreeAction
-  | ICommitChangedNodeAction;
+  | IAddOperationToQueueAction
+  | IApplyChangesToPrimalTreeAction;

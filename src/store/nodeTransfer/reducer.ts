@@ -1,13 +1,12 @@
 import { Reducer } from "redux";
 import { mockedTree } from "shared/data";
-import * as constants from "./constants";
 
 import { INodeTransferAction, TreeState } from "./types";
 
-export const initialState = {
-  initialTree: mockedTree,
-  hashedNodes: {},
-  changedNodesHash: {},
+const initialState = {
+  primalTree: mockedTree,
+  cashedTree: {},
+  operationQueue: [],
 };
 
 export const reducer: Reducer<TreeState, INodeTransferAction> = (
@@ -15,49 +14,26 @@ export const reducer: Reducer<TreeState, INodeTransferAction> = (
   action
 ): TreeState => {
   switch (action.type) {
-    case constants.RESET_STATE:
+    case "@nodeTransfer/RESET_STATE":
       return initialState;
 
-    case constants.GET_NODE:
+    case "@nodeTransfer/UPDATE_TREE":
       return {
         ...state,
-        hashedNodes: { ...state.hashedNodes, ...action.payload },
+        [action.payload.treeType]: action.payload.tree,
       };
 
-    case constants.CREATE_LOCAL_NODE:
+    case "@nodeTransfer/ADD_OPERATION_TO_QUEUE":
       return {
         ...state,
-        hashedNodes: { ...state.hashedNodes, ...action.payload },
+        operationQueue: [...state.operationQueue, action.payload],
       };
 
-    case constants.DELETE_LOCAL_NODE:
+    case "@nodeTransfer/APPLY_CHANGES_TO_PRIMAL_TREE":
       return {
         ...state,
-        [action.payload.treeType]: {
-          ...state[action.payload.treeType],
-          [action.payload.nodeIdToDelete]: {
-            ...state[action.payload.treeType][action.payload.nodeIdToDelete],
-            isDeleted: true,
-          },
-        },
-      };
-
-    case constants.COMMIT_CHANGED_NODE:
-      return {
-        ...state,
-        changedNodesHash: {
-          ...state.changedNodesHash,
-          [action.payload.data.id]: action.payload,
-        },
-      };
-
-    case constants.UPDATE_TREE:
-      return {
-        ...state,
-        [action.payload.treeType]: {
-          ...state[action.payload.treeType],
-          ...action.payload.changedNodesHash,
-        },
+        primalTree: action.payload,
+        operationQueue: [],
       };
 
     default:

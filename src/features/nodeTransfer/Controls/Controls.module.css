@@ -1,0 +1,17 @@
+.controls {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  row-gap: 15px;
+  column-gap: 15px;
+  width: 340px;
+  margin-top: 15px;
+}
+
+.controls * {
+  flex-grow: 1;
+}
+
+.valueChanger {
+  display: flex;
+}
